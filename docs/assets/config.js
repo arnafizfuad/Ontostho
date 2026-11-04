@@ -1,0 +1,1 @@
+window.ANTASTHA_CONFIG={ga4MeasurementId:"",analyticsApiEndpoint:""};

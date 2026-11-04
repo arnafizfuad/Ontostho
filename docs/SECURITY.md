@@ -1,0 +1,1 @@
+Admin route is a static placeholder, not protected. Do not expose private Google API credentials in client-side files. Use authenticated server-side API for reporting.
