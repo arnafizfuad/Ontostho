@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Admin — Antastha Studio</title><meta name="robots" content="noindex,nofollow">
+  <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;600;700&family=Noto+Sans+Bengali:wght@300;400;500&display=swap" rel="stylesheet">
+  <link rel="icon" href="/assets/logo.svg" type="image/svg+xml"><link rel="stylesheet" href="/assets/site.css">
+  <link rel="stylesheet" href="/admin/admin.css">
+  <script defer src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script defer src="/assets/config.js"></script><script defer src="/admin/admin.js"></script>
+</head>
+<body class="admin-body">
+<header class="site-header"><a class="brand" href="/" aria-label="Antastha Studio home"><img src="/assets/logo.svg" alt="" class="logo-mark"><span>অন্তস্থ</span></a><span class="admin-top-label">STUDIO CONTROL / 01</span><a class="contact-link" href="/">VIEW SITE ↗</a></header>
+<main class="admin-shell">
+  <section id="loginPanel" class="admin-login">
+    <span class="section-no">ANTASTHA / PRIVATE ACCESS</span><h1>Studio<br>Control.</h1>
+    <p>Sign in with an account invited by the Supabase project administrator.</p>
+    <form id="loginForm" class="admin-form">
+      <label>Email<input id="loginEmail" type="email" autocomplete="username" required placeholder="you@example.com"></label>
+      <label>Password<input id="loginPassword" type="password" autocomplete="current-password" required placeholder="Your password"></label>
+      <button class="admin-button primary" type="submit">SIGN IN <span>↗</span></button>
+      <p id="loginMessage" class="admin-message" role="status"></p>
+    </form>
+  </section>
+
+  <section id="dashboardPanel" hidden>
+    <div class="admin-heading"><div><span class="section-no">ANTASTHA / ADMINISTRATION</span><h1>Control room.</h1><p id="signedInAs" class="muted"></p></div><button id="signOutBtn" class="admin-button quiet">SIGN OUT</button></div>
+    <div id="appMessage" class="admin-message" role="status" aria-live="polite"></div>
+    <nav class="admin-tabs" aria-label="Admin sections"><button class="active" data-tab="content">CONTENT</button><button data-tab="settings">SITE SETTINGS</button><button data-tab="team">TEAM ACCESS</button></nav>
+
+    <section id="contentTab" class="admin-tab-panel">
+      <div class="panel-heading"><div><span class="section-no">01 / LIBRARY</span><h2>Content library</h2></div><button id="newItemBtn" class="admin-button primary">+ NEW ITEM</button></div>
+      <div class="library-tools"><label>Filter<select id="filterType"><option value="all">All content</option><option value="project">Projects</option><option value="photography">Photography</option><option value="product">Products</option><option value="video">Videos</option><option value="award">Awards</option></select></label><label>Visibility<select id="filterVisibility"><option value="all">All</option><option value="published">Published</option><option value="draft">Draft / hidden</option></select></label></div>
+      <div id="contentList" class="content-list"><p class="muted">Loading content…</p></div>
+      <form id="itemForm" class="editor" hidden>
+        <div class="panel-heading"><div><span class="section-no">CONTENT / EDITOR</span><h2 id="editorTitle">New item</h2></div><button type="button" id="closeEditor" class="admin-button quiet">CLOSE ×</button></div>
+        <input type="hidden" id="itemId">
+        <div class="editor-grid">
+          <label>Content type<select id="itemType" required><option value="project">Project</option><option value="photography">Photography</option><option value="product">Product</option><option value="video">Video</option><option value="award">Award / Recognition</option></select></label>
+          <label>Title<input id="itemTitle" required maxlength="160" placeholder="Project title"></label>
+          <label>বাংলা শিরোনাম<input id="itemTitleBn" maxlength="160" placeholder="বাংলা শিরোনাম"></label>
+          <label>Slug<input id="itemSlug" required maxlength="180" placeholder="project-title"></label>
+          <label class="wide">Description<textarea id="itemDescription" rows="3" placeholder="Short introduction"></textarea></label>
+          <label class="wide">বাংলা বিবরণ<textarea id="itemDescriptionBn" rows="3" placeholder="বাংলা বিবরণ"></textarea></label>
+          <label class="wide">Image URL<input id="itemImage" type="url" placeholder="https://…"><span class="field-hint">Or upload an image below. Uploaded files are stored in Supabase Storage.</span></label>
+          <label class="wide">Upload image<input id="itemFile" type="file" accept="image/*"><span id="uploadStatus" class="field-hint"></span></label>
+          <div class="wide seo-panel"><span class="section-no">IMAGE SEO / SOCIAL SHARING</span><p class="field-hint">Title ও description থেকে SEO তথ্য স্বয়ংক্রিয়ভাবে পূরণ হবে। চাইলে নিজে সম্পাদনা করতে পারবে।</p></div>
+          <label>Image alt text<input id="itemAlt" maxlength="240" placeholder="Describe the image for accessibility and search"></label>
+          <label>SEO title<input id="itemSeoTitle" maxlength="160" placeholder="Search result title"></label>
+          <label class="wide">SEO description<textarea id="itemSeoDescription" rows="2" maxlength="320" placeholder="Search and social preview description"></textarea></label>
+          <label class="wide">External link / video URL<input id="itemLink" type="url" placeholder="https://…"></label>
+          <label>Sort order<input id="itemSort" type="number" value="0"></label>
+          <label class="publish-check"><input id="itemPublished" type="checkbox"> Publish this item</label>
+        </div>
+        <div class="editor-actions"><button type="submit" class="admin-button primary">SAVE ITEM ↗</button><button type="button" id="deleteItemBtn" class="admin-button danger" hidden>DELETE ITEM</button></div>
+      </form>
+    </section>
+
+    <section id="settingsTab" class="admin-tab-panel" hidden>
+      <span class="section-no">02 / IDENTITY</span><h2>Site settings</h2><p class="muted">These values are saved centrally. Existing hard-coded page copy and logo artwork are not automatically rewritten.</p>
+      <form id="settingsForm" class="admin-form settings-form">
+        <label>Studio name<input id="settingName" maxlength="100" placeholder="Antastha Studio"></label>
+        <label>বাংলা নাম<input id="settingNameBn" maxlength="100" placeholder="অন্তস্থ"></label>
+        <label>Default visitor language<select id="settingLanguage"><option value="en">English</option><option value="bn">বাংলা</option></select></label>
+        <button class="admin-button primary" type="submit">SAVE SETTINGS ↗</button>
+      </form>
+    </section>
+
+    <section id="teamTab" class="admin-tab-panel" hidden>
+      <span class="section-no">03 / ACCESS CONTROL</span><h2>Team access</h2>
+      <p>For security, accounts are invited in Supabase Authentication and then explicitly added to the <code>admin_users</code> allowlist. Only allowlisted accounts can manage content.</p>
+      <ol class="setup-steps"><li>Open Supabase → Authentication → Users.</li><li>Invite the team member by email.</li><li>Copy that user's UUID.</li><li>In Supabase SQL Editor, run the allowlist insert shown in <code>SUPABASE-SETUP-BN.md</code>.</li></ol>
+      <p class="field-hint">Never share a database password, secret key or service_role key with a team member or in this page.</p>
+    </section>
+  </section>
+</main>
+<footer class="admin-footer"><span>© 2026 ANTASTHA STUDIO</span><span>PRIVATE ADMINISTRATION</span></footer>
+</body></html>
